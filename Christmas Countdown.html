@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Christmas Countdown</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css?family=Amatic+SC&display=swap");
+      @import url("https://fonts.googleapis.com/css?family=Patua+One&display=swap");
+      @import url("https://fonts.googleapis.com/css?family=Noto+Sans&display=swap");
+
+      html {
+        box-sizing: border-box;
+      }
+
+      body {
+        background-color: #ffffff;
+        color: #ffffff;
+        margin-top: 60px;
+        padding: 0;
+        font-family: roboto;
+        overflow: scroll;
+      }
+
+      #wrapper {
+        background: url(https://source.unsplash.com/SBdmQcW8qag/1920x1580);
+        width: 83.3vw;
+        height: 915px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        border: solid 1px;
+        border-radius: 5px;
+        font-family: Patua, cursive;
+      }
+
+      #timer {
+        font-size: 2.5rem;
+        color: #ffffff;
+        display: grid;
+        margin-top: 80px;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: 90px 50px;
+        justify-items: center;
+        grid-column-gap: 30px;
+      }
+
+      #timer .animated {
+        animation-name: pulse;
+        animation-duration: 1s;
+        animation-timing-function: linear;
+        animation-fill-mode: both;
+        animation-iteration-count: infinite;
+      }
+
+      @keyframes pulse {
+        100% {
+          transform: scaleX(1);
+        }
+
+        30%,
+        50%,
+        80% {
+          transform: scale3d(1.1, 1.1, 1.1);
+        }
+
+        0% {
+          transform: scaleX(1);
+        }
+      }
+
+      .label {
+        background-color: black;
+        font-size: 2.5rem;
+        color: #ffffff;
+        padding-top: 10px;
+      }
+
+      .fa-snowflake {
+        color: #fff;
+        position: absolute;
+        top: -20px;
+        animation: fall linear;
+      }
+
+      @keyframes fall {
+        to {
+          transform: translateY(950px);
+        }
+      }
+
+      /* Styling quiz section */
+      .start-quiz-btn {
+        margin: 3rem 0;
+        background-color: #ffffff;
+        color: #41403e;
+        outline: none;
+        border: none;
+        font-size: 1.3rem;
+        padding: 0.6rem;
+        border-radius: 275px 55px 275px 55px/55px 275px 55px 275px;
+        border: solid 2px #000000;
+        cursor: pointer;
+      }
+
+      .start-quiz-btn:hover {
+        background-color: #d3d2d2;
+        color: #ffffff;
+        border: none;
+      }
+
+      .start-quiz-btn:focus {
+        background-color: #ffffff;
+        color: #41403e;
+        border: none;
+      }
+
+      #quiz-container {
+        font-family: "Noto Sans", sans-serif;
+        font-size: 1.5rem;
+        background: #fff;
+        color: black;
+        font-size: 0.9rem;
+        width: 750px;
+        text-align: center;
+        border: 1px #41403e;
+        border-radius: 235px 55px 235px 55px/55px 235px 55px 235px;
+      }
+
+      #quiz-container h1 {
+        font-family: "Amatic SC", cursive;
+        font-size: 4rem;
+        margin: 0;
+        text-shadow: 0px 3px 3px rgba(0, 0, 0, 0.4);
+      }
+
+      .questionCount {
+        margin: 5px 0 0 0;
+        color: lightgray;
+      }
+
+      .question {
+        padding: 15px 0 20px 0;
+        font-size: 1.1em;
+      }
+
+      .answer {
+        display: grid;
+        grid: repeat(2, 1fr) / repeat(2, 300px);
+        grid-gap: 15px;
+        justify-content: center;
+      }
+
+      .answer-box {
+        border: 1px solid black;
+        padding: 0.8rem;
+        border-radius: 10px;
+        background: #000000;
+        color: #ffffff;
+        cursor: pointer;
+        box-shadow: 2px 4px 4px rgba(63, 127, 191, 0.3);
+      }
+
+      .answer-box:hover {
+        background-color: #ffffff;
+        color: #000000;
+      }
+
+      .message-box {
+        border: 5px dotted #000000;
+        border-radius: 10px;
+        width: 60%;
+        margin: 20px auto;
+        padding: 14px;
+      }
+
+      #green {
+        color: #359e37;
+        margin: -10px 0 -12px 0;
+      }
+
+      #red {
+        color: #9e4135;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .final-message {
+        border: 7px dotted #fec54d;
+        border-radius: 10px;
+        padding: 67px;
+        font-size: 1.5rem;
+        letter-spacing: 2px;
+      }
+
+      .restart-btn {
+        background-color: rgba(247, 241, 227, 1);
+        border: 1px solid lightgray;
+        padding: 10px;
+        text-decoration: none;
+        margin-top: 6%;
+        border-radius: 12px;
+        letter-spacing: 2px;
+        font-size: 1.3rem;
+        outline: none;
+        cursor: pointer;
+      }
+
+      .visible {
+        opacity: 0;
+        transform: translateX(-100rem);
+      }
+
+      .reveal-visible {
+        opacity: 1;
+        transform: translateX(0);
+        transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+      }
+
+      /* Media Queries */
+
+      @media screen and (max-width: 1010px) {
+        #timer {
+          font-size: 5.5rem;
+        }
+
+        #wrapper {
+          background: url(https://source.unsplash.com/SBdmQcW8qag/1920x1580);
+          width: 94vw;
+        }
+
+        h1 {
+          text-align: center;
+        }
+
+      
+      }
+
+      @media screen and (max-width: 929px) {
+        #timer {
+          font-size: 5.5rem;
+        }
+
+        #wrapper {
+          background: url(https://source.unsplash.com/SBdmQcW8qag/1920x1580);
+          width: 93.5vw;
+        }
+
+        h1 {
+          text-align: center;
+        }
+
+     
+      }
+
+      @media screen and (max-width: 690px) {
+        #timer {
+          font-size: 5.5rem;
+        }
+
+        #wrapper {
+          background: url(https://source.unsplash.com/SBdmQcW8qag/1920x1580);
+          width: 91.4vw;
+        }
+
+        h1 {
+          text-align: center;
+        }
+
+      
+      }
+
+      @media screen and (max-width: 929px) {
+        #timer {
+          font-size: 5.5rem;
+        }
+
+        #wrapper {
+          background: url(https://source.unsplash.com/SBdmQcW8qag/1920x1580);
+          width: 92.8vw;
+        }
+      }
+
+      @media screen and (max-width: 518px) {
+        #timer {
+          font-size: 4rem;
+          grid-template-rows: 70px 50px;
+        }
+
+        #wrapper {
+          background: url(https://source.unsplash.com/SBdmQcW8qag/1920x1580);
+          width: 93vw;
+        }
+
+        h1 {
+          font-size: 2.5rem;
+        }
+
+        .label {
+          font-size: 1.7rem;
+        }
+      }
+
+      @media screen and (max-width: 453px) {
+        #timer {
+          grid-template-columns: repeat(2, 1fr);
+          grid-template-rows: repeat(2, 105px 60px);
+          grid-column-gap: 60px;
+        }
+
+        #mins,
+        #secs.animated {
+          margin-top: 50px;
+        }
+
+        #wrapper {
+          background: url(https://source.unsplash.com/SBdmQcW8qag/1920x1580);
+          width: 90vw;
+        }
+
+        #timer span:nth-of-type(-n + 2) {
+          grid-row: 2/3;
+        }
+      }
+    </style>
+    <link rel="stylesheet" href="fontawesome/css/all.css" />
+  </head>
+  <body>
+    <div id="wrapper">
+      <div class="countdown-container">
+        <div id="timer">
+          <div id="days"></div>
+          <div id="hours"></div>
+          <div id="mins"></div>
+          <div id="secs" class="animated"></div>
+          <span class="label">Days</span>
+          <span class="label">Hours</span>
+          <span class="label">Mins</span>
+          <span class="label">Secs</span>
+        </div>
+      </div>
+
+      <button class="start-quiz-btn">Christmas Quiz</button>
+
+      <div id="quiz-container" class="visible">
+        <h1>Christmas Quiz</h1>
+        <div class="questionCount">
+          Question <span id="questionNumber">1</span>/<span id="questionTotal"
+            >5</span
+          >
+        </div>
+        <div class="question">
+          <p>What was Joseph's job?</p>
+        </div>
+
+        <div class="answer">
+          <div id="a0" class="answer-box">0</div>
+          <div id="a1" class="answer-box">1</div>
+          <div id="a2" class="answer-box">2</div>
+          <div id="a3" class="answer-box">3</div>
+        </div>
+
+        <div class="message-box">
+          <div class="message">GOOD LUCK!</div>
+          <div class="message-restart hidden">
+            <button class="restart-btn">PLAY AGAIN</button>
+          </div>
+        </div>
+
+        <div class="score">
+          <p id="green">Correct answers: <span id="correctCount">0</span></p>
+          <p id="red">Wrong answers: <span id="wrongCount">0</span></p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Countdown section
+      const { body } = document;
+      const daysEl = document.getElementById("days");
+      const hoursEl = document.getElementById("hours");
+      const minsEl = document.getElementById("mins");
+      const secsEl = document.getElementById("secs");
+
+      function calculateChristmasCountdown() {
+        const now = new Date();
+        const currentMonth = now.getMonth() + 1;
+        const currentDay = now.getDate();
+
+        // Figure out the year that the next Christmas will occur on
+        let nextChristmasYear = now.getFullYear();
+        if (currentMonth === 12 && currentDay > 25) {
+          nextChristmasYear += 1;
+        }
+
+        const nextChristmasDate = `Dec 25, ${nextChristmasYear} 0:0:0`;
+        const christmasDate = new Date(nextChristmasDate);
+        const timeLeft = christmasDate - now; // in milliseconds
+
+        let days = 0;
+        let hours = 0;
+        let mins = 0;
+        let secs = 0;
+
+        // Don't calculate the time left if it is Christmas day
+        if (currentMonth !== 12 || (currentMonth === 12 && currentDay !== 25)) {
+          days = Math.floor(timeLeft / 1000 / 60 / 60 / 24);
+          hours = Math.floor(timeLeft / 1000 / 60 / 60) % 24;
+          mins = Math.floor(timeLeft / 1000 / 60) % 60;
+          secs = Math.floor(timeLeft / 1000) % 60;
+        }
+        daysEl.innerHTML = days < 10 ? `0${days}` : days;
+        hoursEl.innerHTML = hours < 10 ? `0${hours}` : hours;
+        minsEl.innerHTML = mins < 10 ? `0${mins}` : mins;
+        secsEl.innerHTML = secs < 10 ? `0${secs}` : secs;
+      }
+
+      function createSnowFlake() {
+        const snow_flake = document.createElement("i");
+        snow_flake.classList.add("far");
+        snow_flake.classList.add("fa-snowflake");
+        snow_flake.style.left = `${Math.random() * window.innerWidth}px`;
+        snow_flake.style.animationDuration = `${Math.random() * 3 + 2}s`;
+        snow_flake.style.opacity = Math.random();
+
+        body.appendChild(snow_flake);
+
+        setTimeout(() => {
+          snow_flake.remove();
+        }, 5000);
+      }
+
+      setInterval(calculateChristmasCountdown, 1000);
+      setInterval(createSnowFlake, 100);
+
+      // Quiz section
+      let currentQuestion;
+      let correct;
+      let wrong;
+      let selected;
+      const startQuizBtn = document.querySelector(".start-quiz-btn");
+      const restartBtn = document.querySelector(".restart-btn");
+      const quizContainer = document.querySelector("#quiz-container");
+      const questionTotal = document.querySelector("#questionTotal");
+      const message = document.querySelector(".message");
+      const correctCount = document.querySelector("#correctCount");
+      const wrongCount = document.querySelector("#wrongCount");
+      const question = document.querySelector(".question");
+      const answer = document.querySelector(".answer");
+      const questionCount = document.querySelector(".questionCount");
+      const questionNumber = document.querySelector("#questionNumber");
+      const restartMessage = document.querySelector(".message-restart");
+      const messageBox = document.querySelector(".message-box");
+
+      const quest = [
+        [
+          ["What was Josephs job?"],
+          ["Carpenter", "Dancer", "Priest", "Scholar"],
+          [0],
+        ],
+        [
+          ["How many red nosed reindeers pull Santa's sleigh?"],
+          ["6", "8", "1", "2"],
+          [2],
+        ],
+        [
+          ["What country did Christmas Trees originate from?"],
+          ["Switzerland", "Mexico", "Germany", "Portugal"],
+          [2],
+        ],
+        [
+          [
+            "How does Santa Claus go back up the Chimney to continue his journey of delivering gifts?",
+          ],
+          [
+            "He asks reindeers for help",
+            "He levitates",
+            "He calls fire-fighters",
+            "He jumps up through the chimney",
+          ],
+          [3],
+        ],
+        [
+          ["In the TV series Simpsons, what species is Santas little helper?"],
+          ["Hamster", "Dog", "Frog", "Camel"],
+          [1],
+        ],
+      ];
+
+      questionTotal.textContent = quest.length;
+
+      function displayQuiz() {
+        quizContainer.classList.toggle("reveal-visible");
+        startGame();
+      }
+
+      // Start Game and process game
+      function startGame() {
+        // reset everything to 0
+        currentQuestion = 0;
+        correct = 0;
+        wrong = 0;
+        selected = 0;
+        correctCount.textContent = 0;
+        wrongCount.textContent = 0;
+        show();
+      }
+
+      function processGame() {
+        for (let i = 0; i < 4; i++) {
+          document
+            .querySelector(`#a${i}`)
+            .addEventListener("click", function () {
+              selected = i;
+              if (selected == quest[currentQuestion][2]) {
+                correct++;
+                correctCount.textContent = correct;
+                message.textContent = "GOOD JOB!";
+              } else {
+                wrong++;
+                wrongCount.textContent = wrong;
+                message.textContent = "WRONG!!!";
+              }
+              nextQuestion();
+            });
+        }
+      }
+
+      function nextQuestion() {
+        currentQuestion += 1;
+        if (currentQuestion === quest.length) {
+          message.textContent = `You've scored ${correct} out of ${quest.length} points.`;
+          toggleDisplay();
+        } else {
+          show();
+        }
+      }
+
+      function show() {
+        // display questions
+        question.textContent = quest[currentQuestion][0];
+        // display answers
+        for (let i = 0; i < 4; i += 1) {
+          document.querySelector(`#a${i}`).textContent =
+            quest[currentQuestion][1][i];
+        }
+        // display question number
+        questionNumber.textContent = currentQuestion + 1;
+      }
+
+      function toggleDisplay() {
+        questionCount.classList.toggle("hidden");
+        question.classList.toggle("hidden");
+        answer.classList.toggle("hidden");
+        restartMessage.classList.toggle("hidden");
+        messageBox.classList.toggle("final-message");
+      }
+
+      function restartQuiz() {
+        startGame();
+        toggleDisplay();
+        message.textContent =
+          "Welcome back, hope this time you will play better!";
+      }
+
+      startQuizBtn.addEventListener("click", displayQuiz);
+      restartBtn.addEventListener("click", restartQuiz);
+      startGame();
+      processGame();
+    </script>
+  </body>
+</html>
